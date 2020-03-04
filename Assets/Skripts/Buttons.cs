@@ -5,15 +5,16 @@ using UnityEngine.SceneManagement;
 
 public class Buttons : MonoBehaviour
 {
-    public Sprite buttonPress, buttonUnPress;
-    public bool soundButton;
+    public Sprite button, press;
+    public bool sound;
 
-    private Image image;
     private Transform child;
+    private Image image;
 
-    void Start()
+    private void Start()
     {
-        if (soundButton)
+        /////////   Проверка музыки Она не ровна НО и поэтому играет, ее можно выключить    ////////
+        if (sound)
         {
             if (PlayerPrefs.GetString("Sound") != "SoundOff")
             {
@@ -26,30 +27,44 @@ public class Buttons : MonoBehaviour
                 transform.GetChild(1).gameObject.SetActive(true);
             }
         }
+        //Забираем компонент для работы
         image = GetComponent<Image>();
+        //По умолчанию Звук есть, иконка по по 0-вому индеку
         child = transform.GetChild(0).transform;
     }
-
-    void OnMouseDown()
-    {
-        image.sprite = buttonPress;
+    private void OnMouseDown()
+    {   //Картинка полсе нажатия
+        image.sprite = press;
     }
-
-    void OnMouseUp()
-    {
-        image.sprite = buttonUnPress;
+    private void OnMouseUp()
+    {   //Картинка после Отпуска
+        image.sprite = button;
     }
     private void OnMouseUpAsButton()
     {
         switch (gameObject.name)
         {
+            ///////Считали что объект выключен
+            ///////если опять не ровно НО
+            ///////Записали что ровно НО
+            ///////Меняем картинку
+            ///////else
+            ///////Сбрасываем кей куда вписали ключик SET
+            ///////Меняем иконку
+            ///////Записываем дочерний объект как тру
             case "Sound":
                 child.gameObject.SetActive(false);
                 if (PlayerPrefs.GetString("Sound") != "SoundOff")
                 {
                     PlayerPrefs.SetString("Sound", "SoundOff");
-                    child = transform.GetChild(1).transform;             
+                    child = transform.GetChild(1).transform;
                 }
+                else
+                {
+                    PlayerPrefs.DeleteKey("Sound");
+                    child = transform.GetChild(0).transform;
+                }
+                child.gameObject.SetActive(true);
                 break;
         }
     }
