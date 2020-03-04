@@ -13,7 +13,21 @@ public class Buttons : MonoBehaviour
 
     void Start()
     {
+        if (soundButton)
+        {
+            if (PlayerPrefs.GetString("Sound") != "SoundOff")
+            {
+                transform.GetChild(0).gameObject.SetActive(true);
+                transform.GetChild(1).gameObject.SetActive(false);
+            }
+            else
+            {
+                transform.GetChild(0).gameObject.SetActive(false);
+                transform.GetChild(1).gameObject.SetActive(true);
+            }
+        }
         image = GetComponent<Image>();
+        child = transform.GetChild(0).transform;
     }
 
     void OnMouseDown()
@@ -24,5 +38,19 @@ public class Buttons : MonoBehaviour
     void OnMouseUp()
     {
         image.sprite = buttonUnPress;
+    }
+    private void OnMouseUpAsButton()
+    {
+        switch (gameObject.name)
+        {
+            case "Sound":
+                child.gameObject.SetActive(false);
+                if (PlayerPrefs.GetString("Sound") != "SoundOff")
+                {
+                    PlayerPrefs.SetString("Sound", "SoundOff");
+                    child = transform.GetChild(1).transform;             
+                }
+                break;
+        }
     }
 }
